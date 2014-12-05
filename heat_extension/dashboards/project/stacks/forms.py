@@ -59,9 +59,9 @@ class CustomTemplateForm(forms.SelfHandlingForm):
     attributes = create_upload_form_attributes(
         'template',
         'storage',
-        _('Template from File'))
+        _('Template File'))
 
-    template_storage_source = forms.ChoiceField(label=_('Template from File'),
+    template_storage_source = forms.ChoiceField(label=_('Template File'),
                                         choices=template_choices,
                                         widget=forms.Select(attrs=attributes),
                                         required=False)
@@ -109,9 +109,9 @@ class CustomTemplateForm(forms.SelfHandlingForm):
     attributes = create_upload_form_attributes(
         'env',
         'storage',
-        _('Environment from File'))
+        _('Environment File'))
 
-    environment_storage_source = forms.ChoiceField(label=_('Environment from File'),
+    environment_storage_source = forms.ChoiceField(label=_('Environment File'),
                                         choices=environment_choices,
                                         widget=forms.Select(attrs=attributes),
                                         required=False)
@@ -255,3 +255,17 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         request.method = 'GET'
 
         return self.next_view.as_view()(request, **kwargs)
+
+
+class CustomChangeTemplateForm(CustomTemplateForm):
+    class Meta:
+        name = _('Edit Template')
+        help_text = _('From here you can select a new template to re-launch '
+                      'a stack.')
+    stack_id = forms.CharField(label=_('Stack ID'),
+        widget=forms.widgets.HiddenInput,
+        required=True)
+    stack_name = forms.CharField(label=_('Stack Name'),
+        widget=forms.TextInput(
+            attrs={'readonly': 'readonly'}
+        ))
