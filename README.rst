@@ -13,14 +13,14 @@ Installation notes
 * add 'heat_extension' to INSTALLED_APPS tuple
 * set HEAT_LOCAL to True, and now will be searched in default path `/srv/heat/env`
 
-*note: extension expect two directories `template` and env*
+*note: extension expect two directories template and env*
 
 Custom Heat templates dir
 
 .. code-block:: python
 
-    HEAT_LOCAL = True
-    HEAT_ROOT='/srv/heat/env'
+		HEAT_LOCAL = True
+		HEAT_ROOT='/srv/heat/env'
 
 Read more
 -----

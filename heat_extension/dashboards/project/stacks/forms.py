@@ -255,3 +255,17 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         request.method = 'GET'
 
         return self.next_view.as_view()(request, **kwargs)
+
+
+class CustomChangeTemplateForm(CustomTemplateForm):
+    class Meta:
+        name = _('Edit Template')
+        help_text = _('From here you can select a new template to re-launch '
+                      'a stack.')
+    stack_id = forms.CharField(label=_('Stack ID'),
+        widget=forms.widgets.HiddenInput,
+        required=True)
+    stack_name = forms.CharField(label=_('Stack Name'),
+        widget=forms.TextInput(
+            attrs={'readonly': 'readonly'}
+        ))

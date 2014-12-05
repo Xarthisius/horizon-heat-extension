@@ -3,12 +3,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from openstack_dashboard.dashboards.project. \
-     stacks.views import SelectTemplateView
+     stacks.views import SelectTemplateView, ChangeTemplateView
 
 from heat_extension.dashboards.project.stacks.forms \
-     import CustomTemplateForm
+     import CustomTemplateForm, CustomChangeTemplateForm
+
 
 SelectTemplateView.form_class = CustomTemplateForm
+ChangeTemplateView.form_class = CustomChangeTemplateForm
 
 # noqa | support for other overrides
 
