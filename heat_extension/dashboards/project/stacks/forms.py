@@ -16,6 +16,7 @@ from heat_extension.utils import get_templates, get_environments, \
 LOG = logging.getLogger(__name__)
 
 HEAT_LOCAL = getattr(settings, "HEAT_LOCAL", True)
+HEAT_ALLOW_OWN = getattr(settings, "HEAT_ALLOW_OWN", False) # allow url, raw and file inputs
 
 def create_upload_form_attributes(prefix, input_type, name):
     """Creates attribute dicts for the switchable upload form
@@ -41,9 +42,12 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         help_text = _('From here you can select a template to launch '
                       'a stack.')
 
-    choices = [('url', _('URL')),
-               ('file', _('File')),
-               ('raw', _('Direct Input'))]
+    choices = []
+
+    if HEAT_ALLOW_OWN:
+        choices.append(('url', _('URL')))
+        choices.append(('file', _('File')))
+        choices.append(('raw', _('Direct Input')))
 
     if HEAT_LOCAL:
         choices.append(('storage', _('Local Storage')))

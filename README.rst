@@ -23,6 +23,13 @@ Custom Heat templates dir
 
     HEAT_LOCAL = True
     HEAT_ROOT='/srv/heat/env'
+    
+
+Allow using own templates via url, raw or file inputs
+
+.. code-block:: python
+
+    HEAT_ALLOW_OWN=True
 
 
 Read more
