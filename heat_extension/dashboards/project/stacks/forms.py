@@ -19,6 +19,7 @@ HEAT_LOCAL = getattr(settings, "HEAT_LOCAL", True)
 # allow url, raw and file inputs
 # prevent user fail
 HEAT_ONLY_LOCAL = getattr(settings, "HEAT_ONLY_LOCAL", True)
+HIDE_SOURCE = getattr(settings, "HIDE_SOURCE", True)
 
 
 def create_upload_form_attributes(prefix, input_type, name):
@@ -44,6 +45,7 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         name = _('Select Template')
         help_text = _('From here you can select a template to launch '
                       'a stack.')
+        exclude = ("template_source", )
 
     choices = []
 
@@ -56,9 +58,17 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         choices.append(('storage', _('Local Storage')))
 
     attributes = {'class': 'switchable', 'data-slug': 'templatesource'}
-    template_source = forms.ChoiceField(label=_('Template Source'),
+    
+    template_source_label = _('Template Source')
+    if HEAT_ONLY_LOCAL and HIDE_SOURCE:
+        attributes["style"] = "display:none;"
+        template_source_label = ''
+
+    template_source = forms.ChoiceField(label=template_source_label,
                                         choices=choices,
-                                        widget=forms.Select(attrs=attributes))
+                                        widget=forms.Select(attrs=attributes),
+                                        required=False)
+
 
     template_choices = get_templates()
 
@@ -107,8 +117,13 @@ class CustomTemplateForm(forms.SelfHandlingForm):
 
     attributes = {'data-slug': 'envsource', 'class': 'switchable'}
 
+    environme_source_label = _('Environment Source')
+    if HEAT_ONLY_LOCAL and HIDE_SOURCE:
+        attributes["style"] = "display:none;"
+        environment_source_label = ''
+
     environment_source = forms.ChoiceField(
-        label=_('Environment Source'),
+        label=environment_source_label,
         choices=choices,
         widget=forms.Select(attrs=attributes),
         required=False)
