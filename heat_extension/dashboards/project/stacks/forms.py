@@ -19,7 +19,7 @@ HEAT_LOCAL = getattr(settings, "HEAT_LOCAL", True)
 # allow url, raw and file inputs
 # prevent user fail
 HEAT_ONLY_LOCAL = getattr(settings, "HEAT_ONLY_LOCAL", True)
-ENV_BY_TEMPLATE = getattr(settings, "ENV_BY_TEMPLATE", True)
+
 
 def create_upload_form_attributes(prefix, input_type, name):
     """Creates attribute dicts for the switchable upload form
@@ -70,9 +70,10 @@ class CustomTemplateForm(forms.SelfHandlingForm):
     attributes["data-slug"] = 'localsource'
 
     template_storage_source = forms.ChoiceField(label=_('Template File'),
-                                        choices=template_choices,
-                                        widget=forms.Select(attrs=attributes),
-                                        required=False)
+                                                choices=template_choices,
+                                                widget=forms.Select(
+                                                    attrs=attributes),
+                                                required=False)
 
     attributes = create_upload_form_attributes(
         'template',
@@ -111,20 +112,6 @@ class CustomTemplateForm(forms.SelfHandlingForm):
         choices=choices,
         widget=forms.Select(attrs=attributes),
         required=False)
-
-
-    """
-    environment_choices = get_environments()
-    attributes = create_upload_form_attributes(
-        'env',
-        'storage',
-        _('Environment File'))
-
-    environment_storage_source = forms.ChoiceField(label=_('Environment File'),
-                                        choices=environment_choices,
-                                        widget=forms.Select(attrs=attributes),
-                                        required=False)
-    """
 
     attributes = create_upload_form_attributes(
         'env',
@@ -167,9 +154,11 @@ class CustomTemplateForm(forms.SelfHandlingForm):
                     '%s' % template[0],
                     _('Environment File %s' % template[1]))
                 field = forms.ChoiceField(label=_('Environment File %s' % template[1]),
-                                        choices=get_environments(template[0]),
-                                        widget=forms.Select(attrs=attributes),
-                                        required=False)
+                                          choices=get_environments(
+                                              template[0]),
+                                          widget=forms.Select(
+                                              attrs=attributes),
+                                          required=False)
                 self.fields["environment_data____%s" % template[0]] = field
 
     def clean(self):
@@ -177,14 +166,16 @@ class CustomTemplateForm(forms.SelfHandlingForm):
 
         if not cleaned['template_storage_source']:
             files = self.request.FILES
-            self.clean_uploaded_files('template', _('template'), cleaned, files)
+            self.clean_uploaded_files(
+                'template', _('template'), cleaned, files)
             self.clean_uploaded_files('environment',
-                _('environment'),
-                cleaned,
-                files)
+                                      _('environment'),
+                                      cleaned,
+                                      files)
         else:
             # load from file
-            cleaned["template_data"] = get_template_data(cleaned["template_storage_source"])
+            cleaned["template_data"] = get_template_data(
+                cleaned["template_storage_source"])
 
         # Validate the template and get back the params.
         kwargs = {}
@@ -200,12 +191,6 @@ class CustomTemplateForm(forms.SelfHandlingForm):
             raise forms.ValidationError(unicode(e))
 
         return cleaned
-
-    def populate_environment_storage_source_choices(self, request, context):
-        flavors = instance_utils.flavor_list(request)
-        if flavors:
-            return instance_utils.sort_flavor_list(request, flavors)
-        return []
 
     def clean_uploaded_files(self, prefix, field_label, cleaned, files):
         """Cleans Template & Environment data from form upload.
@@ -265,11 +250,12 @@ class CustomTemplateForm(forms.SelfHandlingForm):
                   'template_data': data['template_data'],
                   'template_url': data['template_url']}
 
-        # load environment data          
+        # load environment data
         if not HEAT_LOCAL:
             kwargs["environment_data"] = data['environment_data']
         else:
-            kwargs["environment_data"] = get_environment_data(data["environment_storage_source"])
+            kwargs["environment_data"] = get_environment_data(
+                data["environment_data____%s" % cleaned["template_storage_source"]])
 
         if data.get('stack_id'):
             kwargs['stack_id'] = data['stack_id']
@@ -286,14 +272,15 @@ class CustomTemplateForm(forms.SelfHandlingForm):
 
 
 class CustomChangeTemplateForm(CustomTemplateForm):
+
     class Meta:
         name = _('Edit Template')
         help_text = _('From here you can select a new template to re-launch '
                       'a stack.')
     stack_id = forms.CharField(label=_('Stack ID'),
-        widget=forms.widgets.HiddenInput,
-        required=True)
+                               widget=forms.widgets.HiddenInput,
+                               required=True)
     stack_name = forms.CharField(label=_('Stack Name'),
-        widget=forms.TextInput(
-            attrs={'readonly': 'readonly'}
-        ))
+                                 widget=forms.TextInput(
+        attrs={'readonly': 'readonly'}
+    ))
