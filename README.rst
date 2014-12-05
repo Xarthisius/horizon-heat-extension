@@ -1,4 +1,6 @@
 
+|License badge|
+
 ======================
 Horizon Heat Extension
 ======================
@@ -23,8 +25,5 @@ Read more
 -----
 
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
-
-
-`Documentation`_
 
 .. |License badge| image:: http://img.shields.io/badge/license-Apache%202.0-green.svg?style=flat
