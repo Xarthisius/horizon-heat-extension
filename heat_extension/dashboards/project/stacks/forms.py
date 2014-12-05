@@ -59,9 +59,9 @@ class CustomTemplateForm(forms.SelfHandlingForm):
     attributes = create_upload_form_attributes(
         'template',
         'storage',
-        _('Template from File'))
+        _('Template File'))
 
-    template_storage_source = forms.ChoiceField(label=_('Template from File'),
+    template_storage_source = forms.ChoiceField(label=_('Template File'),
                                         choices=template_choices,
                                         widget=forms.Select(attrs=attributes),
                                         required=False)
@@ -109,9 +109,9 @@ class CustomTemplateForm(forms.SelfHandlingForm):
     attributes = create_upload_form_attributes(
         'env',
         'storage',
-        _('Environment from File'))
+        _('Environment File'))
 
-    environment_storage_source = forms.ChoiceField(label=_('Environment from File'),
+    environment_storage_source = forms.ChoiceField(label=_('Environment File'),
                                         choices=environment_choices,
                                         widget=forms.Select(attrs=attributes),
                                         required=False)
