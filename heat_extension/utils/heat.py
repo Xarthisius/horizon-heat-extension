@@ -38,15 +38,20 @@ def get_templates(choices=True):
     return templates
 
 
-def get_environments():
+def get_environments(template_name=None):
     """return environments choices
     """
     path = "/".join([HEAT_ROOT, ENV_PATH])
 
     environments = []
 
-    for path in glob.glob("/".join([path, ENV_MASK])):
-        name = filename(path)
+    if template_name:
+        join = [path, template_name, ENV_MASK]
+    else:
+        join = [path, ENV_MASK]
+
+    for path in glob.glob("/".join(join)):
+        name = filename(path)        
         environments.append((name, name.replace("_", " ").capitalize()))
 
     return environments
