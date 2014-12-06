@@ -2,7 +2,7 @@
 Horizon Heat Extension
 ======================
 
-Horizon extension for loading local Heat templates from horizon server.
+Horizon extension for loading local Heat templates directly from horizon server.
 
 Use case
 -----------
@@ -17,24 +17,17 @@ Installation notes
 ------------
 
 * add `heat_extension` to INSTALLED_APPS tuple
-* add `heat_extension.overrides` to `customization_module` in HORIZON_CONFIG or include it from other `customization_module`.
-* set `HEAT_LOCAL` settings variable to True, and now will be searched in default path `/srv/heat/env`
+* add `heat_extension.overrides` to `customization_module` in HORIZON_CONFIG or include it from other `customization_module`
+* the default path for templates is `/srv/heat/env`, but can be set by `HEAT_ROOT` variable
 
-Custom Heat templates dir
+Example settings variables with forCustom Heat templates dir
 
 .. code-block:: python
 
-    HEAT_LOCAL = True
     HEAT_ROOT = '/srv/heat/env'
 
-Enable using own templates via url, raw or file inputs
-
-.. code-block:: python
-
-    HEAT_LOCAL_ONLY = False
-
-
-* create or clone templates in default directory /srv/heat/env or set `HEAT_ROOT` variable to point to  
+* create or clone templates in default directory /srv/heat/env or set `HEAT_ROOT` variable to point to custom directory
+* the name of the launched stack is <template_name>_<env_name>
 
 Template structure
 ---------
@@ -42,7 +35,7 @@ Template structure
 This extensions requires that templates are saved in `template` directory and corresponding 
 environments in `environment/<template_name>` directories.
 
-Sample template structure of 1 template with 3 possible environments.
+Sample template structure with 1 template and 3 possible environments, please note the extensions as they need to match as well.
 
 .. code-block:: bash
 
