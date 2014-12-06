@@ -40,7 +40,7 @@ Enable using own templates via url, raw or file inputs
 
 .. code-block:: python
 
-    HEAT_ONLY_LOCAL = False
+    HEAT_LOCAL_ONLY = False
 
 
 Workflow
