@@ -81,7 +81,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
     def __init__(self, request, *args, **kwargs):
         self.next_view = kwargs.pop('next_view')
-        super(CustomTemplateForm, self).__init__(request, *args, **kwargs)
+        super(LocalTemplateStackForm, self).__init__(request, *args, **kwargs)
 
         if HEAT_LOCAL:
             for template in get_templates():
@@ -98,7 +98,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
                 self.fields["environment____%s" % template[0]] = field
 
     def clean(self):
-        cleaned = super(CustomTemplateForm, self).clean()
+        cleaned = super(LocalTemplateStackForm, self).clean()
 
         cleaned["template_data"] = get_template_data(cleaned["template"])
         cleaned["environment_data"] = get_environment_data(
