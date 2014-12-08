@@ -83,6 +83,7 @@ def get_environment_data(template_name, name):
     path = "/".join([
         HEAT_ROOT,
         ENV_PATH,
+        template_name,
         "".join([name, ENV])
         ])
 
