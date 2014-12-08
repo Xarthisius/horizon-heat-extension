@@ -11,7 +11,7 @@ from horizon import messages
 from openstack_dashboard import api
 
 from heat_extension.utils import get_templates, get_environments, \
-    get_template_data, get_environment_data, JSONEncoder
+    get_template_data, get_environment_data, CustomEncoder
 
 LOG = logging.getLogger(__name__)
 
@@ -108,7 +108,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         # Validate the template and get back the params.
         kwargs = {}
-        kwargs['template'] = str(json.dumps(cleaned["template_data"], cls=JSONEncoder))
+        kwargs['template'] = str(json.dumps(cleaned["template_data"], cls=CustomEncoder))
 
         try:
             validated = api.heat.template_validate(self.request, **kwargs)
@@ -129,7 +129,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         fields = {
             'stack_name': data.get('stack_name'),
-            'template': str(json.dumps(data.get('template_data'), cls=JSONEncoder)),
+            'template': str(json.dumps(data.get('template_data'), cls=CustomEncoder)),
             'environment': data.get('environment_data')["parameters"],
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
