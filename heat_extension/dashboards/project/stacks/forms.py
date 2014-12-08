@@ -108,7 +108,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         # Validate the template and get back the params.
         kwargs = {}
-        kwargs['template'] = template_data
+        kwargs['template'] = cleaned["template_data"]
 
         try:
             validated = api.heat.template_validate(self.request, **kwargs)
