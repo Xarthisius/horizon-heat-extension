@@ -124,11 +124,8 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         for param, key in data.get('template_data').iteritems():
 
-            try:
-                if 'default' in key:
+            if isinstance(key, (list, dict)) and 'default' in key:
                     params[param] = key['default']
-            except Exception, e:
-                params[param] = key
 
         fields = {
             'stack_name': data.get('stack_name'),
