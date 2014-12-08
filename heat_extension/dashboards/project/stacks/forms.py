@@ -120,14 +120,20 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
 
+        params = data.get('environment_data')["parameters"]
+
+        for param, key in data.get('template_data').iteritems():
+
+            if 'default' in key:
+                params[param] = key['default']
+
         fields = {
             'stack_name': data.get('stack_name'),
             'template': data.get('template_data'),
-            'environment': data.get('environment_data'),
+            'environment': data.get('environment_data')["parameters"],
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
-            'parameters': {},
-#            'password': data.get('password')
+            'parameters': params,
         }
 
         try:
