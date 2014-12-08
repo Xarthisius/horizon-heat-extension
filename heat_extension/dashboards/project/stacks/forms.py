@@ -119,7 +119,6 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
         return cleaned
 
     def handle(self, request, data):
-        kwargs = self.create_kwargs(data)
 
         fields = {
             'stack_name': data.get('stack_name'),
