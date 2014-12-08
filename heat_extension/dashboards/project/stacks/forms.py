@@ -99,7 +99,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
     def clean(self):
         cleaned = super(LocalTemplateStackForm, self).clean()
-        template_name = cleaned["template"]
+        template_name = cleaned["template_data"]
         cleaned["template_data"] = get_template_data(template_name)
         cleaned["environment_data"] = get_environment_data(
             cleaned["environment____%s" % template_name])
