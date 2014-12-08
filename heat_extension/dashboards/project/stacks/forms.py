@@ -102,7 +102,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
         template_name = cleaned["template"]
         cleaned["template_data"] = get_template_data(template_name)
         cleaned["environment_data"] = get_environment_data(
-            cleaned["environment____%s" % template_name])
+            template_name, cleaned["environment____%s" % template_name])
 
         cleaned['stack_name'] = "%s_%s" % (cleaned["template"], cleaned["environment____%s" % cleaned["template"]])
 

@@ -76,7 +76,7 @@ def get_template_data(name):
     return data
 
 
-def get_environment_data(name):
+def get_environment_data(template_name, name):
     """load and return parameters data
     """
 
