@@ -35,7 +35,7 @@ def get_templates(choices=True):
         name = filename(path)
         templates.append((name, name.replace("_", " ").capitalize()))
 
-    return templates
+    return sorted(templates)
 
 
 def get_environments(template_name=None):
@@ -54,7 +54,7 @@ def get_environments(template_name=None):
         name = filename(path)        
         environments.append((name, name.replace("_", " ").capitalize()))
 
-    return environments
+    return sorted(environments)
 
 
 def get_template_data(name):
