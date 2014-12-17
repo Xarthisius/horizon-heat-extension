@@ -23,6 +23,7 @@ def filename(path):
     """
     return basename(path).split(".")[0]
 
+
 def get_templates(choices=True):
     """if choices is False return array of full path
     """

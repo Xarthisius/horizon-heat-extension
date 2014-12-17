@@ -10,7 +10,7 @@ from horizon import messages
 
 from openstack_dashboard import api
 
-from heat_extension.utils import get_templates, get_environments, \
+from heat_server_templates.utils import get_templates, get_environments, \
     get_template_data, get_environment_data, CustomEncoder
 
 LOG = logging.getLogger(__name__)
