@@ -1,9 +1,10 @@
+
 {% extends "horizon/common/_modal_form.html" %}
 {% load i18n %}
 {% load url from future %}
 
 {% block form_id %}select_template{% endblock %}
-{% block form_action %}{% url 'horizon:project:heat_templates:select_template' %}{% endblock %}
+{% block form_action %}{% url 'horizon:project:heat_templates:edit_template' %}{% endblock %}
 {% block form_attrs %}enctype="multipart/form-data"{% endblock %}
 
 {% block modal-header %}{% trans "Launch Stack" %}{% endblock %}
@@ -22,6 +23,6 @@
 {% endblock %}
 
 {% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Next" %}" />
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Launch" %}" />
   <a href="{% url 'horizon:project:stacks:index' %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

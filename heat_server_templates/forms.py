@@ -1,6 +1,6 @@
 import json
 import logging
-
+import yaml
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.debug import sensitive_variables  # noqa
 from django.conf import settings
@@ -21,6 +21,7 @@ HEAT_LOCAL = getattr(settings, "HEAT_LOCAL", True)
 HEAT_LOCAL_ONLY = getattr(settings, "HEAT_LOCAL_ONLY", True)
 HIDE_SOURCE = getattr(settings, "HIDE_SOURCE", True)
 
+from heat_server_templates.utils.widgets import JSONWidget
 
 def create_upload_form_attributes(prefix, input_type, name):
     """Creates attribute dicts for the switchable upload form
@@ -72,6 +73,11 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
         help_text=_('Enable rollback on create/update failure.'),
         required=False)
 
+    edit = forms.BooleanField(
+        label=_('Edit before deploy ?'),
+        help_text=_('Enable edit before deploy stack.'),
+        required=False)
+
     attributes = {'class': 'switchable', 'data-slug': 'localsource'}
     choices = get_templates()
     template = forms.ChoiceField(label=_('Template'),
@@ -99,6 +105,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
     def clean(self):
         cleaned = super(LocalTemplateStackForm, self).clean()
+        
         template_name = cleaned["template"]
         cleaned["template_data"] = get_template_data(template_name)
         cleaned["environment_data"] = get_environment_data(
@@ -134,6 +141,67 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
             'parameters': params,
+            'editr': False
+        }
+
+        # redirect to edit
+        if data["edit"]:
+
+            # NOTE (gabriel): This is a bit of a hack, essentially rewriting this
+            # request so that we can chain it as an input to the next view...
+            # but hey, it totally works.
+            request.method = 'GET'
+
+            return self.next_view.as_view()(request, **fields)
+        
+        else:
+            try:
+                api.heat.stack_create(self.request, **fields)
+                messages.success(request, _("Stack creation started."))
+                return True
+            except Exception:
+                exceptions.handle(request)
+
+class LocalTemplateChangeForm(forms.SelfHandlingForm):
+
+    stack_name = forms.CharField(
+        widget=forms.widgets.HiddenInput,
+        required=False)
+
+
+    template = forms.CharField(
+        widget=JSONWidget(attrs={"rows": 100}),
+        required=False)
+    parameters = forms.CharField(
+        widget=JSONWidget,
+        required=False)
+
+    timeout_mins = forms.IntegerField(
+        initial=60,
+        label=_('Creation Timeout (minutes)'),
+        help_text=_('Stack creation timeout in minutes.'),
+        required=True,
+        widget=forms.widgets.HiddenInput)
+
+    disable_rollback = forms.BooleanField(
+        label=_('Rollback On Failure'),
+        help_text=_('Enable rollback on create/update failure.'),
+        required=False,
+        widget=forms.widgets.HiddenInput)
+
+    def handle(self, request, data):
+
+        params = data["parameters"]
+
+
+
+        fields = {
+            'stack_name': data.get('stack_name'),
+            'template': str(json.dumps(json.loads(data.get('template')))),
+            'environment': json.loads(params),
+            'timeout_mins': data.get('timeout_mins'),
+            'disable_rollback': data.get('disable_rollback'),
+            'parameters': json.loads(params),
         }
 
         try:
@@ -141,4 +209,4 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
             messages.success(request, _("Stack creation started."))
             return True
         except Exception:
-            exceptions.handle(request)
+            exceptions.handle(request)        
