@@ -30,10 +30,13 @@ from horizon.utils import memoized
 
 LOG = logging.getLogger(__name__)
 
-from .forms import LocalTemplateStackForm, LocalTemplateChangeForm
+from .forms import LocalTemplateStackForm
+
+from openstack_dashboard.dashboards.project.stacks.views import CreateStackView
 
 from heat_server_templates.utils import get_templates, get_environments, \
     get_template_data, get_environment_data, CustomEncoder
+
 
 
 class SelectTemplateView(forms.ModalFormView):
@@ -43,32 +46,5 @@ class SelectTemplateView(forms.ModalFormView):
 
     def get_form_kwargs(self):
         kwargs = super(SelectTemplateView, self).get_form_kwargs()
-        kwargs['next_view'] = UpdateTemplateParamsView
+        kwargs['next_view'] = CreateStackView
         return kwargs
-
-
-class UpdateTemplateParamsView(forms.ModalFormView):
-    form_class = LocalTemplateChangeForm
-    template_name = 'project/stacks/update_template.html'
-    success_url = reverse_lazy('horizon:project:stacks:index')
-
-    def get_context_data(self, **kwargs):
-        context = super(UpdateTemplateParamsView, self).get_context_data(**kwargs)
-
-        context["template"] = self.kwargs.get("template", self.request.POST["template"])
-        context["stack_name"] = self.kwargs.get("stack_name", self.request.POST["stack_name"])
-        context["timeout_mins"] = self.kwargs.get("timeout_mins", self.request.POST["timeout_mins"])
-        context["disable_rollback"] = self.kwargs.get("disable_rollback", self.request.POST.get("disable_rollback", False))
-
-        context["parameters"] = self.kwargs.get("parameters", self.request.POST["parameters"])
-
-        return context
-
-    def get_initial(self):
-        context = self.get_context_data()
-        return {'template': context["template"],
-                'parameters': context["parameters"],
-                'stack_name': context["stack_name"],
-                'timeout_mins': context["timeout_mins"],
-                'disable_rollback': context["disable_rollback"],
-                }
