@@ -126,7 +126,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         return cleaned
 
-    def create_kwargs(self, data, params):
+    def create_kwargs(self, data):
         kwargs = {'parameters': data['parameters'],
                   'environment_data': data['environment_data'],
                   'template_data': str(json.dumps(data.get('template_data'), cls=CustomEncoder)),
@@ -155,7 +155,7 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
 
         # redirect to edit
         if data.pop("edit"):
-            kwargs = self.create_kwargs(data, params)
+            kwargs = self.create_kwargs(data)
 
             # NOTE (gabriel): This is a bit of a hack, essentially rewriting this
             # request so that we can chain it as an input to the next view...
