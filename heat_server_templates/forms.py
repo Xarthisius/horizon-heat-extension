@@ -151,11 +151,10 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
             'timeout_mins': data.get('timeout_mins'),
             'disable_rollback': not(data.get('enable_rollback')),
             'parameters': params,
-            'edit': False
         }
 
         # redirect to edit
-        if data["edit"]:
+        if data.pop("edit"):
             kwargs = self.create_kwargs(data, params)
 
             # NOTE (gabriel): This is a bit of a hack, essentially rewriting this
