@@ -42,7 +42,7 @@ from heat_server_templates.utils import get_templates, get_environments, \
 class SelectTemplateView(forms.ModalFormView):
     form_class = LocalTemplateStackForm
     template_name = 'project/stacks/select_template.html'
-    success_url = reverse_lazy('horizon:project:heat_templates:edit_template')
+    success_url = reverse_lazy('horizon:project:stacks:index')
 
     def get_form_kwargs(self):
         kwargs = super(SelectTemplateView, self).get_form_kwargs()
