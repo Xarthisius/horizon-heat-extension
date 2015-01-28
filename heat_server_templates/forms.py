@@ -135,6 +135,17 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
             kwargs['stack_id'] = data['stack_id']
         return kwargs
 
+    def update_param_defaults(self, data, params):
+
+        _params = {}
+
+        for key, dic in data["parameters"]["Parameters"].iteritems():
+            if key in params:
+                dic["Default"] = params[key]
+                _params[key] = dic
+
+        return _params
+
     def handle(self, request, data):
 
         params = data.get('environment_data')["parameters"]
@@ -156,7 +167,9 @@ class LocalTemplateStackForm(forms.SelfHandlingForm):
         # redirect to edit
         if data.pop("edit"):
             kwargs = self.create_kwargs(data)
-
+            # NOTE (majklk) provide loaded parameters as defaults
+            # maybe exist better way to do this
+            kwargs["parameters"]["Parameters"] = self.update_param_defaults(data, params)
             # NOTE (gabriel): This is a bit of a hack, essentially rewriting this
             # request so that we can chain it as an input to the next view...
             # but hey, it totally works.
